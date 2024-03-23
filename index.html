@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafébara</title>
+    <style>
+        body {
+            font-family: monospace, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #634832;
+        }
+        #container {
+            max-width: 700px;
+            margin: 25px auto;
+            padding: 25px;
+            background-color: #ece0d1;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #0c0c0c; 
+            text-align: center;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        li {
+            margin-bottom: 12px;
+            color: #0c0c0c; 
+        }
+        select, input[type="number"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #967259; 
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #dbc1ac; 
+        }
+        #cart {
+            margin-top: 20px;
+            border-top: 2px solid #2c1c0e; 
+            padding-top: 20px;
+        }
+        #cart-items {
+            margin: 0;
+            padding: 0;
+        }
+        #cart-items li {
+            margin-bottom: 5px;
+        }
+        p {
+            margin: 10px 0;
+            color: #134e58;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Welcome to Cafébara!</h1>
+        <ul id="product-list">
+            <h1>&nbsp;<br>MENU</h1>
+            <li data-name="Latte" data-price="150">Latte - 150 pesos</li>
+            <li data-name="Cappuccino" data-price="140">Cappuccino - 140 pesos</li>
+            <li data-name="Americano" data-price="120">Americano - 120 pesos</li>
+            <li data-name="Espresso" data-price="125">Espresso - 125 pesos<br>&nbsp;<br>&nbsp;<br>&nbsp;</li>
+        </ul>
+
+        <label for="item">Choose your coffee:<br>&nbsp;</label>
+        <select name="item" id="item">
+            <option value="150">Latte</option>
+            <option value="140">Cappuccino</option>
+            <option value="120">Americano</option>
+            <option value="125">Espresso</option>
+        </select>
+
+        <h2>Quantity</h2>
+        <input type="number" id="quantity">
+        <button onclick="addToCart()">Add to Cart</button>
+        
+        <div id="cart">
+            <h2>Cart</h2>
+            <ul id="cart-items"></ul>
+            <p>Total: <span id="total">0</span> pesos</p>
+        </div>
+
+        <h2>Cash</h2>
+        <input type="number" id="Cash">
+        <button onclick="finalizeOrder()">PAY</button>
+    </div>
+</body>
+</html>
+
+
+    <script>
+        const cartItems = [];
+
+        function addToCart() {
+            const select = document.getElementById("item");
+            const quantityInput = document.getElementById("quantity");
+            const quantity = quantityInput.value.trim();
+
+            if (quantity === "" || isNaN(quantity) || parseInt(quantity) <= 0) {
+                alert("Please enter a valid quantity.");
+                quantityInput.focus();
+                return;
+            }
+
+            const selectedItem = select.options[select.selectedIndex].text;
+            const selectedPrice = parseInt(select.options[select.selectedIndex].value);
+            const totalPrice = quantity * selectedPrice;
+
+            cartItems.push({ name: selectedItem, price: totalPrice });
+            renderCart();
+        }
+        function renderCart() {
+            const cartList = document.getElementById("cart-items");
+            cartList.innerHTML = "";
+            let total = 0;
+
+            cartItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = `${item.name} - ${item.price} pesos`;
+                cartList.appendChild(li);
+                total += item.price;
+            });
+
+            document.getElementById("total").textContent = total;
+        }
+
+        function finalizeOrder() {
+            const cashInput = document.getElementById("Cash").value;
+            const total = parseInt(document.getElementById("total").textContent);
+
+            if (cartItems.length === 0) {
+                alert("You have to add a coffee to the cart!");
+                return;
+            }
+
+            if (cashInput < total) {
+                alert("Insufficient cash!");}                
+             else {
+                const change = cashInput - total;
+                alert(`Thank you for your purchase! Your change is ${change} pesos`);
+                resetCart();}
+            
+        }
+
+        function resetCart() {
+            cartItems.length = 0;
+            document.getElementById("cart-items").innerHTML = "";
+            document.getElementById("total").textContent = 0;
+            document.getElementById("Cash").value = "";
+        }
+    </script>
+</body>
+</html>
+
+
